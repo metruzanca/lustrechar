@@ -1,15 +1,21 @@
-name: Github Pages for package docs
+name: Deploy docs content to Pages
 
 on:
   push:
-    branches:
-      - master
-      - main
-  pull_request:
+    branches: [$default-branch]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
 
 jobs:
-  build:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
+    needs: build
     steps:
       - uses: actions/checkout@v4
 
@@ -21,19 +27,15 @@ jobs:
       - name: Build Gleam Docs
         run: gleam docs build
 
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
       - name: Upload artifact
         id: deployment
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./build/dev/docs/lustrechar
+          path: build/dev/docs/lustrechar
 
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
