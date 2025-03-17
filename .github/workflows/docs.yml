@@ -1,4 +1,4 @@
-name: test
+name: Github Pages for package docs
 
 on:
   push:
@@ -8,14 +8,21 @@ on:
   pull_request:
 
 jobs:
-  test:
+  deploy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - uses: erlef/setup-beam@v1
         with:
           otp-version: "27.1.2"
           gleam-version: "1.6.3"
-          rebar3-version: "3"
-          # elixir-version: "1.15.4"
-      - run: gleam docs build
+
+      - name: Build Gleam Docs
+        run: gleam docs build
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: build/dev/docs/lustrechar
