@@ -21,8 +21,7 @@ jobs:
       - name: Build Gleam Docs
         run: gleam docs build
 
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v4
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: build/dev/docs/lustrechar
+          path: ./build/dev/docs/lustrechar
